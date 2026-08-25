@@ -62,4 +62,11 @@ Thumbs.db
 # Visual Studio cache
 .vs/
 .idea/
+.vscode/
 TempAssembly.dll
+
+# Burst debug output (auto-generated, "DoNotShip")
+*_BurstDebugInformation_DoNotShip/
+
+# Presentation / non-project files
+*.pptx

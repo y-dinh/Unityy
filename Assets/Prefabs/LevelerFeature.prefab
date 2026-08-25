@@ -259,6 +259,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ca2f6a36e7da3f49bb12d0be693977b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  levelerTolerance: 5
+  levelerReadingText: {fileID: 8352286674261807941}
+  levelerOuterRenderer: {fileID: 0}
 --- !u!1 &4486030538015403817
 GameObject:
   m_ObjectHideFlags: 0
@@ -583,7 +586,7 @@ MonoBehaviour:
   _forwardElement: {fileID: 0}
   _oneGrabTransformer: {fileID: 0}
   _twoGrabTransformer: {fileID: 0}
-  _targetTransform: {fileID: 1048262391929581124}
+  _targetTransform: {fileID: 5932902958057896131}
   _maxGrabPoints: -1
   _rigidbody: {fileID: 9031843056094432199}
   _kinematicWhileSelected: 1
