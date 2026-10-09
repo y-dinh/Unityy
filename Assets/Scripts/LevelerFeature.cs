@@ -4,11 +4,9 @@ using UnityEngine;
     public class LevelerFeature : MonoBehaviour
 {
     [Range(1.0f, 10.0f)]
-    [SerializeField] private float levelerTolerance = 5.0f;
+    [SerializeField] private float levelerTolerance = 2.0f;
     [SerializeField] private TextMeshPro levelerReadingText;
     [SerializeField] private Renderer levelerOuterRenderer;
-
-    private Color levelerDefautColor;
 
     void Awake()
     {
@@ -24,9 +22,6 @@ using UnityEngine;
             if (outer != null)
                 levelerOuterRenderer = outer.GetComponent<Renderer>();
         }
-
-        if (levelerOuterRenderer != null)
-            levelerDefautColor = levelerOuterRenderer.material.color;
     }
 
     void Update()
@@ -45,11 +40,9 @@ using UnityEngine;
         if (crossProduct.z > 0) angle = -angle;
 
         levelerReadingText.text = $"{angle:F0}°";
-        levelerOuterRenderer.material.color = 
-            angle <= levelerTolerance &&
-            angle >= (levelerTolerance* -1)
+        levelerOuterRenderer.material.color = Mathf.Abs(angle) <= levelerTolerance
             ? Color.green
-            : levelerDefautColor ;
+            : Color.red;
 
     }
 }
