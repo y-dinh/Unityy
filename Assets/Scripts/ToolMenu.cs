@@ -42,7 +42,7 @@ public class ToolMenu : MonoBehaviour
     [SerializeField] private Color panelColor = new(0.09f, 0.10f, 0.13f, 0.92f);
     [SerializeField] private Color buttonColor = new(0.20f, 0.22f, 0.28f, 1f);
     [SerializeField] private Color buttonHoverColor = new(0.20f, 0.55f, 0.95f, 1f);
-    [SerializeField] private Color laserColor = new(0.20f, 0.60f, 1f, 1f);
+    [SerializeField] private Color laserColor = new(0f, 1f, 0f, 1f);
 
     // ----- Statische Schnittstelle für andere Werkzeuge (z. B. das Messband) -----
     /// <summary>True, während der Zeiger-Controller über einem Menü-Button schwebt.</summary>
