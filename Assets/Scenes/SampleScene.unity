@@ -7875,7 +7875,7 @@ MonoBehaviour:
   panelColor: {r: 0.09, g: 0.1, b: 0.13, a: 0.92}
   buttonColor: {r: 0.2, g: 0.22, b: 0.28, a: 1}
   buttonHoverColor: {r: 0.2, g: 0.55, b: 0.95, a: 1}
-  laserColor: {r: 0.2, g: 0.6, b: 1, a: 1}
+  laserColor: {r: 0, g: 1, b: 0, a: 1}
 --- !u!4 &1549808811
 Transform:
   m_ObjectHideFlags: 0
