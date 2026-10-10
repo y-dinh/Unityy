@@ -49,6 +49,8 @@ public class ToolMenu : MonoBehaviour
     public static bool IsHoveringMenu { get; private set; }
     /// <summary>Der Controller, mit dem auf das Menü gezeigt wird.</summary>
     public static OVRInput.Controller ActivePointerController { get; private set; }
+    /// <summary>True, wenn Grip zum Löschen der anvisierten Messlinie verwendet wird.</summary>
+    public static bool IsDeleteSpecificLineMode { get; private set; }
 
     private class MenuButton
     {
@@ -64,11 +66,13 @@ public class ToolMenu : MonoBehaviour
     private LineRenderer laser;
     private RectTransform cursor;
     private MenuButton hovered;
+    private MenuButton deleteSpecificLineButton;
     private bool visible;
 
     private void Awake()
     {
         ActivePointerController = pointerController;
+        IsDeleteSpecificLineMode = false;
         ResolveAnchors();
         BuildMenu();
         BuildLaser();
@@ -165,7 +169,10 @@ public class ToolMenu : MonoBehaviour
 
         // Button-Highlight
         foreach (var b in buttons)
-            b.Background.color = (b == hovered) ? buttonHoverColor : buttonColor;
+            b.Background.color = (b == hovered ||
+                                  (b == deleteSpecificLineButton && IsDeleteSpecificLineMode))
+                ? buttonHoverColor
+                : buttonColor;
 
         // Laser & Zeiger aktualisieren
         laser.enabled = true;
@@ -234,6 +241,11 @@ public class ToolMenu : MonoBehaviour
         if (tape != null) tape.ClearAllLines();
     }
 
+    private void ToggleDeleteSpecificLineMode()
+    {
+        IsDeleteSpecificLineMode = !IsDeleteSpecificLineMode;
+    }
+
     private void ResetAll()
     {
         foreach (var l in spawnedLevelers)
@@ -255,24 +267,28 @@ public class ToolMenu : MonoBehaviour
         canvas.renderMode = RenderMode.WorldSpace;
 
         menuRoot = canvasGo.GetComponent<RectTransform>();
-        menuRoot.sizeDelta = new Vector2(260f, 320f);
-        menuRoot.localScale = Vector3.one * 0.0006f; // ~15,6 cm x 19,2 cm
+        menuRoot.sizeDelta = new Vector2(260f, 400f);
+        menuRoot.localScale = Vector3.one * 0.0006f; // ~15,6 cm x 24 cm
 
         // Hintergrundpanel
         AddImage(menuRoot, "Panel", panelColor, Vector2.zero, menuRoot.sizeDelta);
 
         // Titel
         var title = AddText(menuRoot, "Title", "Werkzeuge", 26f);
-        title.rectTransform.anchoredPosition = new Vector2(0f, 130f);
+        title.rectTransform.anchoredPosition = new Vector2(0f, 170f);
         title.rectTransform.sizeDelta = new Vector2(240f, 40f);
 
         // Buttons
         string[] labels = { "Leveler +", "Leveler -", "Linien löschen", "Reset" };
         Action[] actions = { SpawnLeveler, DeleteLastLeveler, ClearLines, ResetAll };
-        float startY = 70f;
+        float startY = 100f;
         float step = 66f;
         for (int i = 0; i < labels.Length; i++)
             CreateButton(labels[i], new Vector2(0f, startY - i * step), actions[i]);
+        deleteSpecificLineButton = CreateButton(
+            "Delete specific line",
+            new Vector2(0f, startY - labels.Length * step),
+            ToggleDeleteSpecificLineMode);
 
         // Zeiger-Punkt
         var cursorImg = AddImage(menuRoot, "Cursor", laserColor, Vector2.zero, new Vector2(14f, 14f));
@@ -280,7 +296,7 @@ public class ToolMenu : MonoBehaviour
         cursor.gameObject.SetActive(false);
     }
 
-    private void CreateButton(string label, Vector2 anchoredPos, Action action)
+    private MenuButton CreateButton(string label, Vector2 anchoredPos, Action action)
     {
         var bg = AddImage(menuRoot, "Button_" + label, buttonColor, anchoredPos, new Vector2(230f, 56f));
         var text = AddText(bg.rectTransform, "Label", label, 22f);
@@ -289,12 +305,14 @@ public class ToolMenu : MonoBehaviour
         text.rectTransform.offsetMin = Vector2.zero;
         text.rectTransform.offsetMax = Vector2.zero;
 
-        buttons.Add(new MenuButton
+        var button = new MenuButton
         {
             Rect = bg.rectTransform,
             Background = bg,
             Action = action
-        });
+        };
+        buttons.Add(button);
+        return button;
     }
 
     private static Image AddImage(Transform parent, string name, Color color, Vector2 anchoredPos, Vector2 size)

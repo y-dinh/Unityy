@@ -4,7 +4,7 @@ using UnityEngine;
 /// Erlaubt es, bereits gesetzte Messlinien mit dem Controller zu bearbeiten:
 ///   • Auf eine Linie zeigen  → sie wird hervorgehoben.
 ///   • Grip halten            → die Linie folgt dem Controller (verschieben).
-///   • A-Taste drücken        → nur DIESE eine Linie löschen.
+///   • Löschmodus im Menü aktivieren und Grip drücken → diese Linie löschen.
 ///
 /// Nutzt einen eigenen Strahl (kein Interaction SDK nötig). Einfach an ein
 /// beliebiges GameObject in der Szene hängen – Controller wird automatisch gesucht.
@@ -16,8 +16,6 @@ public class TapeLineEditor : MonoBehaviour
     [SerializeField] private OVRInput.Controller controller = OVRInput.Controller.RTouch;
     [Tooltip("Taste zum Verschieben (gehalten). Standard: Grip / Hand-Trigger.")]
     [SerializeField] private OVRInput.Button grabButton = OVRInput.Button.PrimaryHandTrigger;
-    [Tooltip("Taste zum Löschen dieser einen Linie. Standard: A-Taste.")]
-    [SerializeField] private OVRInput.Button deleteButton = OVRInput.Button.One;
     [Tooltip("Wie nah der Strahl an einer Linie sein muss, um sie zu treffen (Meter).")]
     [SerializeField] private float maxTargetDistance = 0.08f;
     [SerializeField] private Color highlightColor = Color.cyan;
@@ -63,9 +61,12 @@ public class TapeLineEditor : MonoBehaviour
         if (targeted != null)
         {
             if (OVRInput.GetDown(grabButton, controller))
-                StartGrab();
-            else if (OVRInput.GetDown(deleteButton, controller))
-                DeleteTargeted();
+            {
+                if (ToolMenu.IsDeleteSpecificLineMode)
+                    DeleteTargeted();
+                else
+                    StartGrab();
+            }
         }
     }
 
